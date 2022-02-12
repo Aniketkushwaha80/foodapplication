@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/navbar.css">
+ 
+</head>
+<body>
+    
+ <div id="navbar">
+
+  
+    </div>
+    <!-- //-------popop--------------- -->
+    <div id="popop">
+        <form id="form1">
+       
+            <div id="signin">
+                <img id="close" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP7OglwpmjxQmFjw7iQ0Y-7YKBxCwpe500t8OeP802MnUOUfKvmfynP1v8PGrxMg0AQdM&usqp=CAU" alt="">
+             <h1>LOGIN</h1>
+             <p>or  &nbsp;<span id="span1">create an account</span></p>
+             <label id="lable">Username</label>
+             <input type="text" id="input_username" required>
+             <label id="lable">Password</label>
+             <input type="text" id="input_password" required>
+             <button id="loginbutton">LOGIN</button>
+             <p>By clicking on Login, I accept the Terms & Conditions & Privacy Policy</p>
+            </div>
+            </form>
+            
+            <form  id="form2">
+            
+             <div id="signin">
+                 <img id="close2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP7OglwpmjxQmFjw7iQ0Y-7YKBxCwpe500t8OeP802MnUOUfKvmfynP1v8PGrxMg0AQdM&usqp=CAU" alt="">
+              <h1>SIGN UP</h1>
+              <p>or &nbsp;  <span id="span2"> Login to your account</span></p>
+              <label id="lable">Name</label>
+              <input type="text" id="user_name">
+              <label id="lable">Username</label>
+              <input type="text" id="user_username">
+              <label id="lable">Email</label>
+              <input type="text" id="user_email">
+              <label id="lable">Password</label>
+              <input type="text" id="user_password">
+              <label id="lable">Mobile</label>
+              <input type="number" id="user_mobil">
+              <label id="lable">Description</label>
+              <input type="text" id="user_description">
+              <button id="signupbutton">SIGN UP</button>
+              <p>By clicking on Login, I accept the Terms & Conditions & Privacy Policy</p>
+             </div>
+            </form> 
+    </div>
+
+</div>
+      
+    
+    <div id="foodcontainer">
+    
+    </div>
+   
+    
+   
+  
+    
+</body>
+</html>
+<script type="module">
+
+
+
+    import {navbar,popop} from "./components/navbar.js"
+  
+    import showdata from "./components/showdata.js"
+    import click from "./components/func.js"
+
+
+    
+//--------append navbar-------------
+
+let a=navbar()
+document.querySelector("#navbar").innerHTML=a
+// let p=popop()
+// document.querySelector("#popop").innerHTML=p
+
+//-----------------//---------------------
+document.querySelector("#home").addEventListener("click",home)
+function home(){
+    window.location.href="index.html"
+}
+ 
+document.querySelector("#specialrecipe").addEventListener("click",special)
+function special(){
+    window.location.href="special.html"
+}
+document.querySelector("#latestrecipi").addEventListener("click",latest)
+function latest(){
+    window.location.href="latest.html"
+}
+//------------------------------------//
+let search=document.querySelector("#search").value
+document.querySelector("#button").addEventListener("click", searchfood)
+function searchfood(){
+
+document.querySelector("#foodcontainer").innerHTML=""
+
+
+let b=showdata(`https://www.themealdb.com/api/json/v1/1/search.php?s=${search}`)
+
+
+b.then((res)=>{
+   
+    foodappend(res.meals)
+})
+.catch((error)=>{
+
+})
+
+}
+
+function foodappend(food){
+ 
+ food.map((elem)=>{
+    let {strMeal,strMealThumb,strCategory,strArea}=elem
+   
+    let fd={
+       meal: strMeal,
+        thum:strMealThumb,
+        ctg:strCategory,
+        area:strArea
+    }
+
+   let div= document.createElement("div")
+   div.addEventListener("click", function(){
+       show(fd)
+   })
+div.id="food"
+  let p= document.createElement("p")
+p.textContent=strMeal
+
+   let img=document.createElement("img")
+   img.src=strMealThumb
+   div.append(img,p)
+
+   document.querySelector("#foodcontainer").append(div)
+
+
+ })
+}
+
+ function show(f){
+  
+    localStorage.setItem("fooddata", JSON.stringify(f))
+    window.location.href="foodshow.html"
+}
+
+//----------------------------------------------------//
+
+
+function allfood(){
+
+
+
+
+let c=showdata(`https://www.themealdb.com/api/json/v1/1/filter.php?a=Italian`)
+
+
+c.then((res)=>{
+   
+    foodappend2(res.meals)
+})
+.catch((error)=>{
+
+})
+
+}
+allfood()
+
+function foodappend2(food){
+   
+ food.map((elem)=>{
+    let {strMeal,strMealThumb,strCategory,strArea}=elem
+   
+    let fd={
+       meal: strMeal,
+        thum:strMealThumb,
+        ctg:strCategory,
+        area:strArea
+    }
+
+   let div= document.createElement("div")
+   div.addEventListener("click", function(){
+       show2(fd)
+   })
+div.id="food"
+  let p= document.createElement("p")
+p.textContent=strMeal
+
+   let img=document.createElement("img")
+   img.src=strMealThumb
+   div.append(img,p)
+
+   document.querySelector("#foodcontainer").append(div)
+
+
+ })
+}
+
+ function show2(f){
+  console.log(f)
+    localStorage.setItem("fooddata", JSON.stringify(f))
+    window.location.href="foodshow.html"
+}
+
+document.querySelector("#signup").addEventListener("click", function(){
+ document.querySelector("#popop").style.display="flex"
+ document.querySelector("#form2").style.display="none"
+ document.querySelector("#form1").style.display="flex"
+})
+document.querySelector("#close").addEventListener("click", function(){
+ document.querySelector("#popop").style.display="none"
+ 
+})
+document.querySelector("#close2").addEventListener("click", function(){
+ document.querySelector("#popop").style.display="none"
+ 
+})
+
+
+
+
+
+document.querySelector("#span1").addEventListener("click", function(){
+ document.querySelector("#form1").style.display="none"
+ document.querySelector("#popop").style.display="flex"
+ document.querySelector("#form2").style.display="flex"
+
+})
+document.querySelector("#span2").addEventListener("click", function(){
+ document.querySelector("#form2").style.display="none"
+ document.querySelector("#popop").style.display="flex"
+ document.querySelector("#form1").style.display="flex"
+
+})
+//---------------- signup-----------------------------------------------
+
+document.querySelector("#signupbutton").addEventListener("click" ,signup)
+// document.querySelector("#form1").style.display="none"
+   async function signup(event){
+
+        try{
+    event.preventDefault()
+    var register_data={
+name:document.querySelector("#user_name").value,
+email:document.querySelector("#user_email").value,
+username:document.querySelector("#user_username").value,
+password:document.querySelector("#user_password").value,
+mobile:document.querySelector("#user_mobil").value,
+description:document.querySelector("#user_description").value
+
+
+
+
+    };
+  
+   register_data=JSON.stringify(register_data);
+  
+
+}
+catch(error){
+    console.log("error",error)
+}
+
+let req_api="https://masai-api-mocker.herokuapp.com/auth/register"
+ 
+let response = await fetch(req_api,{
+    method : "POST",
+    body: register_data,
+    
+    headers: {
+        "Content-Type": "application/jSON",
+    },
+});
+
+let data = await response.json()
+check(data.error)
+
+
+}
+function check(d){
+    if(d==false){
+        console.log("succ")
+       
+       
+        document.querySelector("#form2").style.display="none"
+        document.querySelector("#form1").style.display="flex"
+        alert("Succesfully Registration")
+    }else{
+      alert("Incorrect Users Details!")
+
+    }
+  
+ 
+ 
+ 
+
+}
+
+// --------------login------------------------------------
+
+document.querySelector("#loginbutton").addEventListener("click",login)
+var cond;
+async function login(event){
+
+  
+    event.preventDefault()
+   
+let login_data={
+
+username :document.querySelector("#input_username").value,
+password :document.querySelector("#input_password").value,
+
+};
+
+login_data = JSON.stringify(login_data)
+
+let login_api="https://masai-api-mocker.herokuapp.com/auth/login"
+
+let response= await fetch(login_api , {
+
+method :"POST",
+body: login_data,
+headers: {
+    "Content-Type":"application/json",
+},
+
+})
+
+let logindata= await response.json()
+ cond=logindata.error
+ 
+check3()
+var username=document.querySelector("#input_username").value
+var token=logindata.token
+getuser(username,token)
+}
+
+
+
+function check3(){
+    if(cond==false){
+        alert("Login Succesfull")
+        document.querySelector("#popop").style.display="none"
+
+    }
+}
+
+///  ----------------------getuser////////////////////
+
+async function getuser(username ,token){
+
+let api= `https://masai-api-mocker.herokuapp.com/user/${username}`
+
+let response= await fetch(api , {
+    headers: {
+    "Content-Type":"application/json",
+    Authorization : `Bearer ${token}`,
+},
+
+})
+let data=await response.json()
+
+appenddata(data.username)
+
+}
+function appenddata(d){
+    document.querySelector("#username").innerHTML=d
+}
+</script>
